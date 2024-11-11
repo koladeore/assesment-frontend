@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { User, UserFormData } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 // Validation schema using yup
 const schema = yup
@@ -32,6 +33,7 @@ const AddUserPage = () => {
   const [status, setStatus] = useState(false);
   const [profilePhotoBase64, setProfilePhotoBase64] = useState<string>('');
   const [fileName, setFileName] = useState<string>('');
+  const navigate = useNavigate();
   // Initialize React Hook Form with validation schema
   const {
     register,
@@ -71,6 +73,10 @@ const AddUserPage = () => {
       setFileName('');
       // Clear profile photo value
       setValue('profilePhoto', '');
+      // eslint-disable-next-line no-undef
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     } catch (err) {
       console.error(err);
       setError('Error submitting data');
