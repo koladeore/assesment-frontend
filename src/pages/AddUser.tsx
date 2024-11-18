@@ -196,7 +196,7 @@ const AddUserPage = () => {
             <Toggle
               id="status"
               checked={status}
-              onChange={() => setStatus(!status)} // Toggle status value
+              onChange={() => setStatus(!status)}
             />
             <span className="text-gray-700">
               {status ? 'Active' : 'Inactive'}

@@ -60,22 +60,31 @@ const Home = () => {
           >
             <div className="flex justify-center mb-4">
               <img
+                data-testid="user-image"
                 src={`data:image/jpeg;base64,${user.profilePhoto}`}
                 alt={`${user.name}'s profile`}
                 className="w-28 h-28 rounded-full border-4 border-blue-500 p-2"
               />
             </div>
             <div className="text-center">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              <h2
+                data-testid="user-name"
+                className="text-2xl font-semibold text-gray-800 mb-2"
+              >
                 {user.name}
               </h2>
-              <p className="text-lg text-gray-600 mb-1">{user.role}</p>
+              <p data-testid="user-role" className="text-lg text-gray-600 mb-1">
+                {user.role}
+              </p>
               <p
+                data-testid="user-status"
                 className={`text-sm font-medium ${user.status ? 'text-green-500' : 'text-red-500'} mb-2`}
               >
                 {user.status ? 'Active' : 'Inactive'}
               </p>
-              <p className="text-sm text-gray-500">{user.email}</p>
+              <p data-testid="user-email" className="text-sm text-gray-500">
+                {user.email}
+              </p>
             </div>
           </div>
         ))}
