@@ -21,7 +21,8 @@ export default [
         window: 'readonly',
         document: 'readonly',
         console: 'readonly',
-        process: 'readonly', 
+        process: 'readonly',
+        FileList: 'readonly'
       },
     },
     plugins: {

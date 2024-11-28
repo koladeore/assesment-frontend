@@ -15,10 +15,17 @@ import { useNavigate } from 'react-router-dom';
 // Validation schema using yup
 const schema = yup
   .object({
-    name: yup.string().required('Name is required'),
+    name: yup
+      .string()
+      .matches(/^[a-zA-Z\s]+$/, 'Name must only contain letters and spaces')
+      .required('Name is required'),
     email: yup
       .string()
       .email('Invalid email address')
+      .matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        'Email must include a dot in the domain part (e.g., example@domain.com)'
+      )
       .required('Email is required'),
     role: yup.string().required('Role is required'),
     status: yup.boolean().required('Status is required'),
@@ -97,6 +104,18 @@ const AddUserPage = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      const validImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/gif',
+      ];
+      if (!validImageTypes.includes(file.type)) {
+        toast.error('Please upload a valid image file (JPEG, PNG, JPG, GIF).');
+        // Clear the file input
+        event.target.value = '';
+        return;
+      }
       setFileName(file.name);
       try {
         const options = {

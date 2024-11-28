@@ -86,7 +86,11 @@ const ManageUser = () => {
                 <tr key={user.id} className="border-b hover:bg-gray-50">
                   <td className="p-4">
                     <img
-                      src={`data:image/jpeg;base64,${user.profilePhoto}`}
+                      src={
+                        user.profilePhoto
+                          ? `data:image/jpeg;base64,${user.profilePhoto}`
+                          : '/avatar.png'
+                      }
                       alt={`${user.name}'s profile`}
                       className="w-12 h-12 rounded-full mx-auto"
                     />

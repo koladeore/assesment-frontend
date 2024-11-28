@@ -61,7 +61,7 @@ const Home = () => {
             <div className="flex justify-center mb-4">
               <img
                 data-testid="user-image"
-                src={`data:image/jpeg;base64,${user.profilePhoto}`}
+                src={user.profilePhoto ? `data:image/jpeg;base64,${user.profilePhoto}` : '/avatar.png'}
                 alt={`${user.name}'s profile`}
                 className="w-28 h-28 rounded-full border-4 border-blue-500 p-2"
               />

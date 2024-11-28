@@ -8,6 +8,29 @@ import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
 import imageCompression from 'browser-image-compression';
 import { User, UserFormData } from '../types';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+// Validation schema using yup
+const schema = yup
+  .object({
+    name: yup
+      .string()
+      .matches(/^[a-zA-Z\s]+$/, 'Name must only contain letters and spaces')
+      .required('Name is required'),
+    email: yup
+      .string()
+      .email('Invalid email address')
+      .matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        'Email must include a dot in the domain part (e.g., example@domain.com)'
+      )
+      .required('Email is required'),
+    role: yup.string().required('Role is required'),
+    status: yup.boolean().required('Status is required'),
+    profilePhoto: yup.string().required('Profile Photo is required'),
+  })
+  .required();
 
 const EditUserPage = () => {
   const { userId } = useParams<{ userId: string }>();
@@ -17,8 +40,21 @@ const EditUserPage = () => {
   const [fileName, setFileName] = useState<string>('');
   const [status, setStatus] = useState(false);
 
-  const { register, handleSubmit, setValue } = useForm<UserFormData>();
-
+  // Initialize React Hook Form with validation schema
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    // clear form after submission if needed
+    reset,
+  } = useForm<UserFormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      // Default status to false
+      status: false,
+    },
+  });
   // Fetch the user data by ID
   useEffect(() => {
     const fetchUser = async () => {
@@ -76,6 +112,18 @@ const EditUserPage = () => {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
+      const validImageTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/jpg',
+        'image/gif',
+      ];
+      if (!validImageTypes.includes(file.type)) {
+        toast.error('Please upload a valid image file (JPEG, PNG, JPG, GIF).');
+        // Clear the file input
+        event.target.value = '';
+        return;
+      }
       setFileName(file.name);
       try {
         const options = {
@@ -95,6 +143,7 @@ const EditUserPage = () => {
           );
           // Store only the raw base64 string
           setProfilePhotoBase64(rawBase64);
+          setValue('profilePhoto', rawBase64);
         };
         reader.readAsDataURL(compressedFile);
       } catch (error) {
@@ -103,6 +152,7 @@ const EditUserPage = () => {
     } else {
       // Clear the preview if no file is chosen
       setProfilePhotoBase64('');
+      setValue('profilePhoto', '');
       setFileName('');
     }
   };
@@ -123,6 +173,9 @@ const EditUserPage = () => {
             id="name"
             className="p-3 border rounded-md"
           />
+          {errors.name && (
+            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+          )}
         </div>
 
         {/* Email Input */}
@@ -136,6 +189,9 @@ const EditUserPage = () => {
             id="email"
             className="p-3 border rounded-md"
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         {/* Role Input */}
@@ -152,6 +208,9 @@ const EditUserPage = () => {
             <option value="Admin">Admin</option>
             <option value="User">User</option>
           </select>
+          {errors.role && (
+            <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
+          )}
         </div>
 
         {/* Status Toggle */}
@@ -169,6 +228,9 @@ const EditUserPage = () => {
               {status ? 'Active' : 'Inactive'}
             </span>
           </div>
+          {errors.status && (
+            <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>
+          )}
         </div>
 
         {/* Profile Photo Upload */}
@@ -190,16 +252,19 @@ const EditUserPage = () => {
           >
             {fileName ? 'Update User Profile Picture' : 'Please select a file'}
           </label>
-          {/* Show the selected image */}
-          {profilePhotoBase64 && (
-            <div className="mt-4">
-              <img
-                src={`data:image/jpeg;base64,${profilePhotoBase64}`}
-                alt="Profile"
-                className="w-32 h-32 object-cover rounded-full"
-              />
-            </div>
+          {errors.profilePhoto && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.profilePhoto.message}
+            </p>
           )}
+          {/* Show the selected image */}
+          <div className="mt-4">
+            <img
+              src={profilePhotoBase64 ? `data:image/png;base64,${profilePhotoBase64}` : '/avatar.png'}
+              alt="Profile"
+              className="w-32 h-32 object-cover rounded-full"
+            />
+          </div>
         </div>
 
         {/* Submit Button */}
