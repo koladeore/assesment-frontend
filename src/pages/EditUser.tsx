@@ -46,8 +46,6 @@ const EditUserPage = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    // clear form after submission if needed
-    reset,
   } = useForm<UserFormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -260,7 +258,11 @@ const EditUserPage = () => {
           {/* Show the selected image */}
           <div className="mt-4">
             <img
-              src={profilePhotoBase64 ? `data:image/png;base64,${profilePhotoBase64}` : '/avatar.png'}
+              src={
+                profilePhotoBase64
+                  ? `data:image/png;base64,${profilePhotoBase64}`
+                  : '/avatar.png'
+              }
               alt="Profile"
               className="w-32 h-32 object-cover rounded-full"
             />
